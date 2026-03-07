@@ -1,1 +1,190 @@
-<p>patient-profile works!</p>
+@if (patient(); as p) {
+  <div class="space-y-6">
+
+    <!-- Top Bar -->
+    <div class="flex items-center justify-between">
+      <button (click)="goBack()" class="text-teal-600 hover:text-teal-800 font-medium transition">
+        &larr; Back to Patients
+      </button>
+      <div class="flex gap-2">
+        @if (!isEditing) {
+          <button (click)="startEditing()"
+            class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-sm font-medium transition">
+            Edit Info
+          </button>
+        }
+        <button (click)="deletePatient()"
+          class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition">
+          Delete
+        </button>
+      </div>
+    </div>
+
+    <!-- Patient Info Card -->
+    <div class="bg-white rounded-xl shadow p-6">
+      @if (isEditing) {
+        <!-- Edit Mode -->
+        <h2 class="text-lg font-semibold text-gray-700 mb-4">Edit Patient Information</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-600 mb-1">First Name *</label>
+            <input type="text" [(ngModel)]="editDraft.firstName"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-600 mb-1">Last Name *</label>
+            <input type="text" [(ngModel)]="editDraft.lastName"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-600 mb-1">Phone *</label>
+            <input type="text" [(ngModel)]="editDraft.phone"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-600 mb-1">Email</label>
+            <input type="email" [(ngModel)]="editDraft.email"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-600 mb-1">Date of Birth</label>
+            <input type="date" [(ngModel)]="editDraft.dateOfBirth"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-600 mb-1">Gender</label>
+            <select [(ngModel)]="editDraft.gender"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400">
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-600 mb-1">Address</label>
+            <input type="text" [(ngModel)]="editDraft.address"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-600 mb-1">Allergies</label>
+            <input type="text" [(ngModel)]="editDraft.allergies"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-600 mb-1">Notes</label>
+            <input type="text" [(ngModel)]="editDraft.notes"
+              class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-400" />
+          </div>
+        </div>
+        <div class="flex gap-2 pt-4">
+          <button (click)="saveEdits()"
+            class="px-5 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-medium transition">
+            Save
+          </button>
+          <button (click)="cancelEditing()"
+            class="px-5 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-medium transition">
+            Cancel
+          </button>
+        </div>
+      } @else {
+        <!-- View Mode -->
+        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-bold text-gray-800">{{ p.firstName }} {{ p.lastName }}</h2>
+            <p class="text-sm text-gray-500 font-mono">{{ p.id }}</p>
+          </div>
+          <span class="inline-block self-start px-3 py-1 rounded-full text-sm font-semibold"
+            [ngClass]="statusColor(p.trackingStatus)">
+            {{ statusLabel(p.trackingStatus) }}
+          </span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3 mt-4 text-sm">
+          <div><span class="text-gray-500">Phone:</span> <span class="ml-1 text-gray-800">{{ p.phone }}</span></div>
+          <div><span class="text-gray-500">Email:</span> <span class="ml-1 text-gray-800">{{ p.email || '—' }}</span></div>
+          <div><span class="text-gray-500">DOB:</span> <span class="ml-1 text-gray-800">{{ p.dateOfBirth || '—' }}</span></div>
+          <div><span class="text-gray-500">Gender:</span> <span class="ml-1 text-gray-800 capitalize">{{ p.gender }}</span></div>
+          <div><span class="text-gray-500">Address:</span> <span class="ml-1 text-gray-800">{{ p.address || '—' }}</span></div>
+          <div><span class="text-gray-500">Allergies:</span> <span class="ml-1 text-gray-800">{{ p.allergies || 'None' }}</span></div>
+          @if (p.notes) {
+            <div class="sm:col-span-2 lg:col-span-3"><span class="text-gray-500">Notes:</span> <span class="ml-1 text-gray-800">{{ p.notes }}</span></div>
+          }
+          <div><span class="text-gray-500">Last Visit:</span> <span class="ml-1 text-gray-800">{{ p.lastVisitDate ?? '—' }}</span></div>
+          <div><span class="text-gray-500">Next Follow-Up:</span> <span class="ml-1 text-gray-800">{{ p.nextFollowUpDate ?? '—' }}</span></div>
+        </div>
+      }
+    </div>
+
+    <!-- Tracking Actions -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+      <!-- Change Status -->
+      <div class="bg-white rounded-xl shadow p-5 space-y-3">
+        <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Change Status</h3>
+        <div class="flex flex-wrap gap-2">
+          @for (s of statuses; track s) {
+            <button
+              (click)="changeStatus(s)"
+              class="px-3 py-1.5 rounded-full text-xs font-semibold border transition"
+              [ngClass]="p.trackingStatus === s
+                ? statusColor(s) + ' border-transparent'
+                : 'bg-white text-gray-500 border-gray-300 hover:border-teal-400'">
+              {{ statusLabel(s) }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Schedule Follow-Up -->
+      <div class="bg-white rounded-xl shadow p-5 space-y-3">
+        <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Schedule Follow-Up</h3>
+        <div class="flex gap-2">
+          <input type="date" [(ngModel)]="newFollowUpDate"
+            class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400" />
+          <button (click)="submitFollowUp()"
+            class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-sm font-medium transition">
+            Set
+          </button>
+        </div>
+      </div>
+
+      <!-- Add Note -->
+      <div class="bg-white rounded-xl shadow p-5 space-y-3">
+        <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Add Note</h3>
+        <div class="flex gap-2">
+          <input type="text" [(ngModel)]="newNote" placeholder="Enter a note..."
+            class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400" />
+          <button (click)="submitNote()"
+            class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-sm font-medium transition">
+            Add
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- History Timeline -->
+    <div class="bg-white rounded-xl shadow p-6">
+      <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-4">History Timeline</h3>
+      @if (p.history.length === 0) {
+        <p class="text-gray-400 text-sm">No history events yet.</p>
+      } @else {
+        <ol class="relative border-l-2 border-gray-200 ml-3 space-y-6">
+          @for (event of p.history.slice().reverse(); track event.id) {
+            <li class="ml-6">
+              <span class="absolute -left-3 flex items-center justify-center w-6 h-6 bg-white border-2 border-gray-300 rounded-full text-xs">
+                {{ eventIcon(event.type) }}
+              </span>
+              <div>
+                <time class="text-xs text-gray-400">{{ event.date }}</time>
+                <p class="text-sm text-gray-700 mt-1">{{ event.description }}</p>
+              </div>
+            </li>
+          }
+        </ol>
+      }
+    </div>
+
+  </div>
+} @else {
+  <div class="flex items-center justify-center h-64">
+    <p class="text-gray-400 text-lg">Patient not found.</p>
+  </div>
+}

@@ -1,1 +1,55 @@
-<p>dashboard works!</p>
+<div class="space-y-6">
+
+  <h1 class="text-2xl font-bold text-gray-800">Dashboard</h1>
+
+  <!-- KPI Cards -->
+  <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+    <div (click)="goToPatients()"
+      class="bg-white rounded-xl shadow p-5 cursor-pointer hover:ring-2 hover:ring-teal-400 transition">
+      <p class="text-sm text-gray-500">Total Patients</p>
+      <p class="text-3xl font-bold text-gray-800 mt-1">{{ totalPatients() }}</p>
+    </div>
+    <div (click)="goToPatients('New')"
+      class="bg-blue-50 rounded-xl shadow p-5 cursor-pointer hover:ring-2 hover:ring-blue-400 transition">
+      <p class="text-sm text-blue-600">New</p>
+      <p class="text-3xl font-bold text-blue-800 mt-1">{{ statusCounts().New }}</p>
+    </div>
+    <div (click)="goToPatients('InTreatment')"
+      class="bg-yellow-50 rounded-xl shadow p-5 cursor-pointer hover:ring-2 hover:ring-yellow-400 transition">
+      <p class="text-sm text-yellow-600">In Treatment</p>
+      <p class="text-3xl font-bold text-yellow-800 mt-1">{{ statusCounts().InTreatment }}</p>
+    </div>
+    <div (click)="goToPatients('FollowUpNeeded')"
+      class="bg-orange-50 rounded-xl shadow p-5 cursor-pointer hover:ring-2 hover:ring-orange-400 transition">
+      <p class="text-sm text-orange-600">Follow-Up Needed</p>
+      <p class="text-3xl font-bold text-orange-800 mt-1">{{ statusCounts().FollowUpNeeded }}</p>
+    </div>
+    <div (click)="goToPatients('Completed')"
+      class="bg-green-50 rounded-xl shadow p-5 cursor-pointer hover:ring-2 hover:ring-green-400 transition">
+      <p class="text-sm text-green-600">Completed</p>
+      <p class="text-3xl font-bold text-green-800 mt-1">{{ statusCounts().Completed }}</p>
+    </div>
+  </div>
+
+  <!-- Upcoming Follow-Ups -->
+  <div class="bg-white rounded-xl shadow p-6">
+    <h2 class="text-lg font-semibold text-gray-700 mb-4">Upcoming Follow-Ups</h2>
+    @if (upcomingFollowUps().length === 0) {
+      <p class="text-gray-400 text-sm">No upcoming follow-ups.</p>
+    } @else {
+      <ul class="divide-y divide-gray-100">
+        @for (p of upcomingFollowUps(); track p.id) {
+          <li (click)="goToProfile(p.id)"
+            class="flex items-center justify-between py-3 cursor-pointer hover:bg-gray-50 rounded-lg px-2 transition">
+            <div>
+              <p class="text-sm font-medium text-gray-800">{{ p.firstName }} {{ p.lastName }}</p>
+              <p class="text-xs text-gray-500">{{ p.phone }}</p>
+            </div>
+            <span class="text-sm text-teal-700 font-medium">{{ p.nextFollowUpDate }}</span>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+
+</div>
