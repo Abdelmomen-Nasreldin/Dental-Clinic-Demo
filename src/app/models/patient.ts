@@ -7,6 +7,8 @@ export interface TrackingEvent {
   description: string;
 }
 
+import { Visit } from './visit';
+
 export interface Patient {
   id: string;
   firstName: string;
@@ -24,5 +26,6 @@ export interface Patient {
   trackingStatus: TrackingStatus;
   lastVisitDate?: string;
   nextFollowUpDate?: string;
+  visits: Visit[];
   history: TrackingEvent[];
 }

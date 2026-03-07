@@ -96,6 +96,7 @@ export class PatientsListComponent {
       totalBill: this.newPatient.totalBill ?? 0,
       amountPaid: 0,
       trackingStatus: 'New',
+      visits: [],
       history: [
         {
           id: `E${Date.now()}`,

@@ -26,10 +26,10 @@ export const PAGE_ROUTES_DATA
   //   icon: 'person',
   //   path: 'appointments',
   // },
-  // VISITS: {
-  //   name: 'Visits',
-  //   nameAr: 'الزيارات',
-  //   icon: 'person',
-  //   path: 'visits',
-  // },
+  VISITS: {
+    name: 'Visits',
+    nameAr: 'الزيارات',
+    icon: 'visits',
+    path: 'visits',
+  },
 } as const;
