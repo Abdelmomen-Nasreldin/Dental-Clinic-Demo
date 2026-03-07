@@ -92,6 +92,9 @@ export class PatientsListComponent {
       allergies: this.newPatient.allergies?.trim(),
       notes: this.newPatient.notes?.trim(),
       address: this.newPatient.address?.trim(),
+      isSmoker: this.newPatient.isSmoker ?? false,
+      totalBill: this.newPatient.totalBill ?? 0,
+      amountPaid: 0,
       trackingStatus: 'New',
       history: [
         {
@@ -118,6 +121,12 @@ export class PatientsListComponent {
     });
   }
 
+  balanceColor(patient: Patient): string {
+    const remaining = patient.totalBill - patient.amountPaid;
+    if (patient.totalBill === 0) return 'text-gray-400';
+    return remaining <= 0 ? 'text-green-600' : 'text-red-600';
+  }
+
   private emptyPatient(): Partial<Patient> {
     return {
       firstName: '',
@@ -129,6 +138,8 @@ export class PatientsListComponent {
       allergies: '',
       notes: '',
       address: '',
+      isSmoker: false,
+      totalBill: 0,
     };
   }
 }

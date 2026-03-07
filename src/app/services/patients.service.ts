@@ -124,6 +124,35 @@ export class PatientsService {
     );
   }
 
+  recordPayment(patientId: string, amount: number) {
+    this._patients.update((list) =>
+      list.map((p) => {
+        if (p.id !== patientId) return p;
+        const cappedAmount = Math.min(amount, p.totalBill - p.amountPaid);
+        if (cappedAmount <= 0) return p;
+        const newPaid = p.amountPaid + cappedAmount;
+        const fullyPaid = newPaid >= p.totalBill;
+        const event: TrackingEvent = {
+          id: `E${Date.now()}`,
+          date: new Date().toISOString().split('T')[0],
+          type: 'payment',
+          description: `Payment of ${cappedAmount} EGP received.${fullyPaid ? ' Fully paid.' : ''}`,
+        };
+        return {
+          ...p,
+          amountPaid: newPaid,
+          history: [...p.history, event],
+        };
+      }),
+    );
+  }
+
+  updateBill(patientId: string, newTotal: number) {
+    this._patients.update((list) =>
+      list.map((p) => (p.id === patientId ? { ...p, totalBill: newTotal } : p)),
+    );
+  }
+
   generateNextId(): string {
     const ids = this._patients().map((p) => Number.parseInt(p.id.replace('P', ''), 10));
     const max = ids.length ? Math.max(...ids) : 0;

@@ -28,6 +28,13 @@ export class DashboardComponent {
     return counts;
   });
 
+  billingSummary = computed(() => {
+    const patients = this.patientsService.patients();
+    const totalBilled = patients.reduce((sum, p) => sum + p.totalBill, 0);
+    const totalCollected = patients.reduce((sum, p) => sum + p.amountPaid, 0);
+    return { totalBilled, totalCollected, outstanding: totalBilled - totalCollected };
+  });
+
   upcomingFollowUps = computed(() => {
     const today = new Date().toISOString().split('T')[0];
     return this.patientsService
