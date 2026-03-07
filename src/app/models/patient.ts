@@ -3,7 +3,7 @@ export type TrackingStatus = 'New' | 'InTreatment' | 'FollowUpNeeded' | 'Complet
 export interface TrackingEvent {
   id: string;
   date: string;
-  type: 'status_change' | 'visit' | 'note' | 'follow_up';
+  type: 'status_change' | 'visit' | 'note' | 'follow_up' | 'payment';
   description: string;
 }
 
@@ -18,6 +18,9 @@ export interface Patient {
   allergies?: string;
   notes?: string;
   address?: string;
+  isSmoker: boolean;
+  totalBill: number;
+  amountPaid: number;
   trackingStatus: TrackingStatus;
   lastVisitDate?: string;
   nextFollowUpDate?: string;

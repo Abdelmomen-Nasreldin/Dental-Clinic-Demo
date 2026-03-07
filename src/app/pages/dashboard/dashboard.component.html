@@ -31,6 +31,22 @@
     </div>
   </div>
 
+  <!-- Billing Summary -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="bg-white rounded-xl shadow p-5">
+      <p class="text-sm text-gray-500">Total Billed</p>
+      <p class="text-2xl font-bold text-gray-800 mt-1">{{ billingSummary().totalBilled }} EGP</p>
+    </div>
+    <div class="bg-white rounded-xl shadow p-5">
+      <p class="text-sm text-green-600">Total Collected</p>
+      <p class="text-2xl font-bold text-green-700 mt-1">{{ billingSummary().totalCollected }} EGP</p>
+    </div>
+    <div class="bg-white rounded-xl shadow p-5">
+      <p class="text-sm" [ngClass]="billingSummary().outstanding > 0 ? 'text-red-600' : 'text-green-600'">Outstanding</p>
+      <p class="text-2xl font-bold mt-1" [ngClass]="billingSummary().outstanding > 0 ? 'text-red-700' : 'text-green-700'">{{ billingSummary().outstanding }} EGP</p>
+    </div>
+  </div>
+
   <!-- Upcoming Follow-Ups -->
   <div class="bg-white rounded-xl shadow p-6">
     <h2 class="text-lg font-semibold text-gray-700 mb-4">Upcoming Follow-Ups</h2>

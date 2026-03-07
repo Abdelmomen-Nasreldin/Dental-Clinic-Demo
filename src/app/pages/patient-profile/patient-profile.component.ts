@@ -28,6 +28,7 @@ export class PatientProfileComponent implements OnInit {
 
   newNote = '';
   newFollowUpDate = '';
+  paymentAmount: number | null = null;
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id') ?? '';
@@ -73,6 +74,8 @@ export class PatientProfileComponent implements OnInit {
       allergies: this.editDraft.allergies?.trim(),
       notes: this.editDraft.notes?.trim(),
       address: this.editDraft.address?.trim(),
+      isSmoker: this.editDraft.isSmoker ?? current.isSmoker,
+      totalBill: this.editDraft.totalBill ?? current.totalBill,
     };
 
     this.patientsService.updatePatient(updated);
@@ -111,6 +114,25 @@ export class PatientProfileComponent implements OnInit {
 
     this.patientsService.addNote(p.id, this.newNote.trim());
     this.newNote = '';
+    this.refreshPatientSignal();
+    this.notify.showSuccessAlert();
+  }
+
+  submitPayment() {
+    const p = this.patient();
+    if (!p || !this.paymentAmount || this.paymentAmount <= 0) {
+      this.notify.showErrorAlert();
+      return;
+    }
+
+    const remaining = p.totalBill - p.amountPaid;
+    if (remaining <= 0) {
+      this.notify.showErrorAlert();
+      return;
+    }
+
+    this.patientsService.recordPayment(p.id, this.paymentAmount);
+    this.paymentAmount = null;
     this.refreshPatientSignal();
     this.notify.showSuccessAlert();
   }
@@ -154,6 +176,7 @@ export class PatientProfileComponent implements OnInit {
       visit: '🦷',
       note: '📝',
       follow_up: '📅',
+      payment: '💰',
     };
     return map[type] ?? '•';
   }
