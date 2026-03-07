@@ -1,0 +1,12 @@
+  <aside class="w-60 p-4 bg-white shadow-md">
+    <nav>
+      <ul>
+        @for (page of pages; track page.path) {
+          <li class="py-2 px-4 cursor-pointer" [class.active]="isActive(page.path)" (click)="navigateTo(page.path)">
+            <a [routerLink]="page.path">{{ page.name }}</a>
+          </li>
+        }
+      </ul>
+    </nav>
+
+  </aside>
