@@ -1,6 +1,8 @@
 # Dental Clinic Patient Tracking System
 
 A frontend demo application for dental clinics to track patient status, visit history, and follow-up scheduling. Built with **Angular 19** and **Tailwind CSS**.
+## Live Preview
+- https://dental-clinic-managment-system.netlify.app/
 
 ## Features
 
