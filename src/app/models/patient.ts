@@ -1,9 +1,19 @@
 export type TrackingStatus = 'New' | 'InTreatment' | 'FollowUpNeeded' | 'Completed';
 
+export type ImageCategory = 'xray' | 'panoramic' | 'intraoral' | 'before_after' | 'other';
+
+export interface PatientImage {
+  id: string;
+  dataUrl: string;
+  category: ImageCategory;
+  label?: string;
+  dateAdded: string;
+}
+
 export interface TrackingEvent {
   id: string;
   date: string;
-  type: 'status_change' | 'visit' | 'note' | 'follow_up' | 'payment';
+  type: 'status_change' | 'visit' | 'note' | 'follow_up' | 'payment' | 'image';
   description: string;
 }
 
@@ -28,4 +38,5 @@ export interface Patient {
   nextFollowUpDate?: string;
   visits: Visit[];
   history: TrackingEvent[];
+  images: PatientImage[];
 }
