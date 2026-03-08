@@ -1,5 +1,5 @@
 import { computed, Injectable, signal } from '@angular/core';
-import { Patient, TrackingEvent, TrackingStatus } from '../models/patient';
+import { Patient, PatientImage, TrackingEvent, TrackingStatus } from '../models/patient';
 import { Visit } from '../models/visit';
 import { patients as mockPatients } from '../defines/mock-ups';
 
@@ -181,6 +181,46 @@ export class PatientsService {
         const dates = filtered.map((v) => v.visitDate).sort();
         const lastDate = dates.length ? dates[dates.length - 1] : undefined;
         return { ...p, visits: filtered, lastVisitDate: lastDate || undefined, totalBill: p.totalBill - visitCost };
+      }),
+    );
+  }
+
+  addImageToPatient(patientId: string, image: PatientImage) {
+    this._patients.update((list) =>
+      list.map((p) => {
+        if (p.id !== patientId) return p;
+        const event: TrackingEvent = {
+          id: `E${Date.now()}`,
+          date: new Date().toISOString().split('T')[0],
+          type: 'image',
+          description: `Image uploaded — ${image.category}${image.label ? ': ' + image.label : ''}.`,
+        };
+        return {
+          ...p,
+          images: [...p.images, image],
+          history: [...p.history, event],
+        };
+      }),
+    );
+  }
+
+  removeImageFromPatient(patientId: string, imageId: string) {
+    this._patients.update((list) =>
+      list.map((p) => {
+        if (p.id !== patientId) return p;
+        const image = p.images.find((img) => img.id === imageId);
+        if (!image) return p;
+        const event: TrackingEvent = {
+          id: `E${Date.now()}`,
+          date: new Date().toISOString().split('T')[0],
+          type: 'image',
+          description: `Image removed — ${image.category}${image.label ? ': ' + image.label : ''}.`,
+        };
+        return {
+          ...p,
+          images: p.images.filter((img) => img.id !== imageId),
+          history: [...p.history, event],
+        };
       }),
     );
   }

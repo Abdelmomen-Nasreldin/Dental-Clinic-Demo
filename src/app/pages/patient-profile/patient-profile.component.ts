@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PatientsService } from '../../services/patients.service';
 import { VisitsService } from '../../services/visits.service';
 import { NotifyService } from '../../services/notify.service';
-import { Patient, TrackingStatus } from '../../models/patient';
+import { ImageCategory, Patient, PatientImage, TrackingStatus } from '../../models/patient';
 import { Visit } from '../../models/visit';
 import { Procedure } from '../../models/procedure';
 import { PAGES } from '../../defines/constants';
@@ -34,6 +34,13 @@ export class PatientProfileComponent implements OnInit {
   newNote = '';
   newFollowUpDate = '';
   paymentAmount: number | null = null;
+
+  readonly imageCategories: ImageCategory[] = ['xray', 'panoramic', 'intraoral', 'before_after', 'other'];
+  selectedImageCategory: ImageCategory = 'xray';
+  imageLabel = '';
+  selectedFile: File | null = null;
+  imageFilter: ImageCategory | 'all' = 'all';
+  lightboxImage: PatientImage | null = null;
 
 
 
@@ -150,6 +157,94 @@ export class PatientProfileComponent implements OnInit {
 
 
 
+  get filteredImages(): PatientImage[] {
+    const p = this.patient();
+    if (!p) return [];
+    if (this.imageFilter === 'all') return p.images;
+    return p.images.filter((img) => img.category === this.imageFilter);
+  }
+
+  categoryLabel(cat: ImageCategory): string {
+    const map: Record<ImageCategory, string> = {
+      xray: 'X-Ray',
+      panoramic: 'Panoramic',
+      intraoral: 'Intraoral',
+      before_after: 'Before / After',
+      other: 'Other',
+    };
+    return map[cat];
+  }
+
+  imageCategoryCount(patient: Patient, cat: ImageCategory): number {
+    return patient.images.filter((img) => img.category === cat).length;
+  }
+
+  categoryColor(cat: ImageCategory): string {
+    const map: Record<ImageCategory, string> = {
+      xray: 'bg-indigo-100 text-indigo-800',
+      panoramic: 'bg-purple-100 text-purple-800',
+      intraoral: 'bg-pink-100 text-pink-800',
+      before_after: 'bg-amber-100 text-amber-800',
+      other: 'bg-gray-100 text-gray-700',
+    };
+    return map[cat];
+  }
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.selectedFile = input.files?.[0] ?? null;
+  }
+
+  uploadImage() {
+    const p = this.patient();
+    if (!p || !this.selectedFile) {
+      this.notify.showErrorAlert();
+      return;
+    }
+
+    const file = this.selectedFile;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const image: PatientImage = {
+        id: `IMG${Date.now()}`,
+        dataUrl: reader.result as string,
+        category: this.selectedImageCategory,
+        label: this.imageLabel.trim() || undefined,
+        dateAdded: new Date().toISOString().split('T')[0],
+      };
+      this.patientsService.addImageToPatient(p.id, image);
+      this.selectedFile = null;
+      this.imageLabel = '';
+      this.selectedImageCategory = 'xray';
+      this.refreshPatientSignal();
+      this.notify.showSuccessAlert();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  deleteImage(imageId: string) {
+    const p = this.patient();
+    if (!p) return;
+    this.notify.showConfirmAlert('warning').then((result) => {
+      if (result.isConfirmed) {
+        this.patientsService.removeImageFromPatient(p.id, imageId);
+        if (this.lightboxImage?.id === imageId) {
+          this.lightboxImage = null;
+        }
+        this.refreshPatientSignal();
+        this.notify.showSuccessAlert();
+      }
+    });
+  }
+
+  openLightbox(image: PatientImage) {
+    this.lightboxImage = image;
+  }
+
+  closeLightbox() {
+    this.lightboxImage = null;
+  }
+
   deletePatient() {
     const p = this.patient();
     if (!p) return;
@@ -190,6 +285,7 @@ export class PatientProfileComponent implements OnInit {
       note: '📝',
       follow_up: '📅',
       payment: '💰',
+      image: '📷',
     };
     return map[type] ?? '•';
   }

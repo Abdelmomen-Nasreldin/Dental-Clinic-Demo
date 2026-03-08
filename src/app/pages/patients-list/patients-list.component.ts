@@ -97,6 +97,7 @@ export class PatientsListComponent {
       amountPaid: 0,
       trackingStatus: 'New',
       visits: [],
+      images: [],
       history: [
         {
           id: `E${Date.now()}`,

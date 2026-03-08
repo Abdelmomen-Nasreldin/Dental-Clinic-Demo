@@ -42,6 +42,7 @@ export const patients: Patient[] = [
         ],
       },
     ],
+    images: [],
   },
   {
     id: 'P002',
@@ -89,6 +90,7 @@ export const patients: Patient[] = [
         ],
       },
     ],
+    images: [],
   },
   {
     id: 'P003',
@@ -130,6 +132,7 @@ export const patients: Patient[] = [
         ],
       },
     ],
+    images: [],
   },
   {
     id: 'P004',
@@ -149,6 +152,7 @@ export const patients: Patient[] = [
       { id: 'E031', date: '2026-03-01', type: 'note', description: 'Patient reports tooth pain in lower-right area.' },
     ],
     visits: [],
+    images: [],
   },
   {
     id: 'P005',
@@ -189,6 +193,7 @@ export const patients: Patient[] = [
         ],
       },
     ],
+    images: [],
   },
   {
     id: 'P006',
@@ -237,5 +242,6 @@ export const patients: Patient[] = [
         ],
       },
     ],
+    images: [],
   },
 ];
