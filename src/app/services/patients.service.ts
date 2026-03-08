@@ -174,10 +174,13 @@ export class PatientsService {
     this._patients.update((list) =>
       list.map((p) => {
         if (p.id !== patientId) return p;
+        const visit = p.visits.find((v) => v.id === visitId);
+        if (!visit) return p;
+        const visitCost = visit.procedures.reduce((sum, pr) => sum + pr.cost, 0);
         const filtered = p.visits.filter((v) => v.id !== visitId);
         const dates = filtered.map((v) => v.visitDate).sort();
         const lastDate = dates.length ? dates[dates.length - 1] : undefined;
-        return { ...p, visits: filtered, lastVisitDate: lastDate || undefined };
+        return { ...p, visits: filtered, lastVisitDate: lastDate || undefined, totalBill: p.totalBill - visitCost };
       }),
     );
   }
