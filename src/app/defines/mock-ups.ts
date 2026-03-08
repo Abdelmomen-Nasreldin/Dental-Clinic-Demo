@@ -26,6 +26,22 @@ export const patients: Patient[] = [
       { id: 'E005', date: '2026-02-20', type: 'follow_up', description: 'Follow-up scheduled for 2026-03-15.' },
       { id: 'E006', date: '2026-02-20', type: 'payment', description: 'Payment of 800 EGP received.' },
     ],
+    visits: [
+      {
+        id: 'V001', visitDate: '2026-01-25', diagnosis: 'Cavities on teeth #14 and #36',
+        notes: 'Patient referred for fillings.',
+        procedures: [
+          { id: 'PR001', toothNumber: 14, procedureType: 'Examination', cost: 200 },
+          { id: 'PR002', toothNumber: 36, procedureType: 'X-Ray', cost: 150 },
+        ],
+      },
+      {
+        id: 'V002', visitDate: '2026-02-20', diagnosis: 'Filling on tooth #14',
+        procedures: [
+          { id: 'PR003', toothNumber: 14, procedureType: 'Composite Filling', cost: 600 },
+        ],
+      },
+    ],
   },
   {
     id: 'P002',
@@ -53,6 +69,26 @@ export const patients: Patient[] = [
       { id: 'E017', date: '2026-01-08', type: 'payment', description: 'Payment of 2000 EGP received.' },
       { id: 'E018', date: '2026-02-05', type: 'payment', description: 'Payment of 1200 EGP received. Fully paid.' },
     ],
+    visits: [
+      {
+        id: 'V010', visitDate: '2025-11-12', diagnosis: 'Routine cleaning needed',
+        procedures: [
+          { id: 'PR010', toothNumber: 0, procedureType: 'Scaling & Polishing', cost: 400 },
+        ],
+      },
+      {
+        id: 'V011', visitDate: '2026-01-08', diagnosis: 'Irreversible pulpitis on tooth #26',
+        procedures: [
+          { id: 'PR011', toothNumber: 26, procedureType: 'Root Canal Therapy', cost: 1800 },
+        ],
+      },
+      {
+        id: 'V012', visitDate: '2026-02-05', diagnosis: 'Crown fitting on tooth #26',
+        procedures: [
+          { id: 'PR012', toothNumber: 26, procedureType: 'Porcelain Crown', cost: 1000 },
+        ],
+      },
+    ],
   },
   {
     id: 'P003',
@@ -79,6 +115,21 @@ export const patients: Patient[] = [
       { id: 'E025', date: '2026-01-30', type: 'status_change', description: 'Status changed to Completed.' },
       { id: 'E026', date: '2026-01-30', type: 'payment', description: 'Payment of 900 EGP received. Fully paid.' },
     ],
+    visits: [
+      {
+        id: 'V020', visitDate: '2025-10-05', diagnosis: 'Full dental examination',
+        procedures: [
+          { id: 'PR020', toothNumber: 0, procedureType: 'Comprehensive Exam', cost: 300 },
+        ],
+      },
+      {
+        id: 'V021', visitDate: '2025-10-20', diagnosis: 'Periodontal disease — deep cleaning required',
+        procedures: [
+          { id: 'PR021', toothNumber: 0, procedureType: 'Deep Cleaning (Upper)', cost: 300 },
+          { id: 'PR022', toothNumber: 0, procedureType: 'Deep Cleaning (Lower)', cost: 300 },
+        ],
+      },
+    ],
   },
   {
     id: 'P004',
@@ -97,6 +148,7 @@ export const patients: Patient[] = [
       { id: 'E030', date: '2026-03-01', type: 'status_change', description: 'Patient registered — status set to New.' },
       { id: 'E031', date: '2026-03-01', type: 'note', description: 'Patient reports tooth pain in lower-right area.' },
     ],
+    visits: [],
   },
   {
     id: 'P005',
@@ -121,6 +173,21 @@ export const patients: Patient[] = [
       { id: 'E043', date: '2026-02-28', type: 'visit', description: 'Extraction of tooth #38 (lower-left wisdom).' },
       { id: 'E044', date: '2026-02-28', type: 'follow_up', description: 'Follow-up scheduled for 2026-03-20 — extraction site check.' },
       { id: 'E045', date: '2026-02-28', type: 'payment', description: 'Payment of 500 EGP received.' },
+    ],
+    visits: [
+      {
+        id: 'V040', visitDate: '2026-02-01', diagnosis: 'Impacted wisdom teeth — extraction needed',
+        procedures: [
+          { id: 'PR040', toothNumber: 38, procedureType: 'Consultation & X-Ray', cost: 350 },
+        ],
+      },
+      {
+        id: 'V041', visitDate: '2026-02-28', diagnosis: 'Extraction of lower-left wisdom tooth',
+        procedures: [
+          { id: 'PR041', toothNumber: 38, procedureType: 'Surgical Extraction', cost: 1500 },
+          { id: 'PR042', toothNumber: 38, procedureType: 'Sutures', cost: 150 },
+        ],
+      },
     ],
   },
   {
@@ -147,6 +214,28 @@ export const patients: Patient[] = [
       { id: 'E055', date: '2026-02-10', type: 'status_change', description: 'Status changed to FollowUpNeeded.' },
       { id: 'E056', date: '2026-02-10', type: 'follow_up', description: 'Next adjustment scheduled for 2026-03-08.' },
       { id: 'E057', date: '2026-01-10', type: 'payment', description: 'Payment of 3000 EGP received.' },
+    ],
+    visits: [
+      {
+        id: 'V050', visitDate: '2025-12-15', diagnosis: 'Orthodontic consultation — Class II malocclusion',
+        procedures: [
+          { id: 'PR050', toothNumber: 0, procedureType: 'Orthodontic Consultation', cost: 500 },
+          { id: 'PR051', toothNumber: 0, procedureType: 'Panoramic X-Ray', cost: 300 },
+        ],
+      },
+      {
+        id: 'V051', visitDate: '2026-01-10', diagnosis: 'Braces fitted — upper and lower arches',
+        procedures: [
+          { id: 'PR052', toothNumber: 0, procedureType: 'Metal Braces (Upper)', cost: 3000 },
+          { id: 'PR053', toothNumber: 0, procedureType: 'Metal Braces (Lower)', cost: 3000 },
+        ],
+      },
+      {
+        id: 'V052', visitDate: '2026-02-10', diagnosis: 'First adjustment — wire tightening',
+        procedures: [
+          { id: 'PR054', toothNumber: 0, procedureType: 'Braces Adjustment', cost: 500 },
+        ],
+      },
     ],
   },
 ];

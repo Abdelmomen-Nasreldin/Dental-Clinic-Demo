@@ -1,5 +1,6 @@
 import { computed, Injectable, signal } from '@angular/core';
 import { Patient, TrackingEvent, TrackingStatus } from '../models/patient';
+import { Visit } from '../models/visit';
 import { patients as mockPatients } from '../defines/mock-ups';
 
 @Injectable({
@@ -145,11 +146,39 @@ export class PatientsService {
         };
       }),
     );
-  }
+   }
 
   updateBill(patientId: string, newTotal: number) {
     this._patients.update((list) =>
       list.map((p) => (p.id === patientId ? { ...p, totalBill: newTotal } : p)),
+    );
+  }
+
+  addVisitToPatient(patientId: string, visit: Visit, event: TrackingEvent) {
+    this._patients.update((list) =>
+      list.map((p) => {
+        if (p.id !== patientId) return p;
+        const totalCost = visit.procedures.reduce((sum, pr) => sum + pr.cost, 0);
+        return {
+          ...p,
+          totalBill: p.totalBill + totalCost,
+          visits: [...p.visits, visit],
+          lastVisitDate: visit.visitDate > (p.lastVisitDate ?? '') ? visit.visitDate : p.lastVisitDate,
+          history: [...p.history, event],
+        };
+      }),
+    );
+  }
+
+  removeVisitFromPatient(patientId: string, visitId: string) {
+    this._patients.update((list) =>
+      list.map((p) => {
+        if (p.id !== patientId) return p;
+        const filtered = p.visits.filter((v) => v.id !== visitId);
+        const dates = filtered.map((v) => v.visitDate).sort();
+        const lastDate = dates.length ? dates[dates.length - 1] : undefined;
+        return { ...p, visits: filtered, lastVisitDate: lastDate || undefined };
+      }),
     );
   }
 

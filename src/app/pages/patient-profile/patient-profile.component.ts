@@ -3,8 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PatientsService } from '../../services/patients.service';
+import { VisitsService } from '../../services/visits.service';
 import { NotifyService } from '../../services/notify.service';
 import { Patient, TrackingStatus } from '../../models/patient';
+import { Visit } from '../../models/visit';
+import { Procedure } from '../../models/procedure';
 import { PAGES } from '../../defines/constants';
 
 @Component({
@@ -16,6 +19,7 @@ export class PatientProfileComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly patientsService = inject(PatientsService);
+  private readonly visitsService = inject(VisitsService);
   private readonly notify = inject(NotifyService);
 
   readonly statuses: TrackingStatus[] = ['New', 'InTreatment', 'FollowUpNeeded', 'Completed'];
@@ -29,6 +33,10 @@ export class PatientProfileComponent implements OnInit {
   newNote = '';
   newFollowUpDate = '';
   paymentAmount: number | null = null;
+
+  showVisitForm = false;
+  visitDraft = this.emptyVisit();
+  procedureDraft = this.emptyProcedure();
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id') ?? '';
@@ -137,6 +145,68 @@ export class PatientProfileComponent implements OnInit {
     this.notify.showSuccessAlert();
   }
 
+  toggleVisitForm() {
+    this.showVisitForm = !this.showVisitForm;
+    if (this.showVisitForm) {
+      this.visitDraft = this.emptyVisit();
+      this.procedureDraft = this.emptyProcedure();
+    }
+  }
+
+  addProcedureToVisit() {
+    if (!this.procedureDraft.procedureType?.trim() || this.procedureDraft.cost <= 0) {
+      this.notify.showErrorAlert();
+      return;
+    }
+    this.visitDraft.procedures.push({
+      ...this.procedureDraft,
+      id: `PR${Date.now()}`,
+    });
+    this.procedureDraft = this.emptyProcedure();
+  }
+
+  removeProcedureFromDraft(index: number) {
+    this.visitDraft.procedures.splice(index, 1);
+  }
+
+  submitVisit() {
+    const p = this.patient();
+    if (!p || !this.visitDraft.visitDate || !this.visitDraft.diagnosis?.trim()) {
+      this.notify.showErrorAlert();
+      return;
+    }
+
+    const visit: Visit = {
+      id: `V${Date.now()}`,
+      visitDate: this.visitDraft.visitDate,
+      diagnosis: this.visitDraft.diagnosis.trim(),
+      notes: this.visitDraft.notes?.trim() || undefined,
+      procedures: [...this.visitDraft.procedures],
+    };
+
+    this.visitsService.addVisit(p.id, visit);
+    this.showVisitForm = false;
+    this.visitDraft = this.emptyVisit();
+    this.refreshPatientSignal();
+    this.notify.showSuccessAlert();
+  }
+
+  deleteVisit(visitId: string) {
+    const p = this.patient();
+    if (!p) return;
+    this.notify.showConfirmAlert('warning').then((result) => {
+      if (result.isConfirmed) {
+        this.visitsService.removeVisit(p.id, visitId);
+        this.refreshPatientSignal();
+        this.notify.showSuccessAlert();
+      }
+    });
+  }
+
+  visitTotalCost(visit: Visit): number {
+    return visit.procedures.reduce((sum, pr) => sum + pr.cost, 0);
+  }
+
   deletePatient() {
     const p = this.patient();
     if (!p) return;
@@ -185,5 +255,13 @@ export class PatientProfileComponent implements OnInit {
     const id = this.patientId();
     this.patientId.set('');
     this.patientId.set(id);
+  }
+
+  private emptyVisit(): Visit {
+    return { id: '', visitDate: '', diagnosis: '', notes: '', procedures: [] };
+  }
+
+  private emptyProcedure(): Procedure {
+    return { id: '', toothNumber: 0, procedureType: '', cost: 0 };
   }
 }
