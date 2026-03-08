@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PatientsService } from '../../services/patients.service';
+import { VisitsService } from '../../services/visits.service';
 import { NotifyService } from '../../services/notify.service';
 import { Patient, TrackingStatus } from '../../models/patient';
 import { Visit } from '../../models/visit';
@@ -18,6 +19,7 @@ export class PatientProfileComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly patientsService = inject(PatientsService);
+  private readonly visitsService = inject(VisitsService);
   private readonly notify = inject(NotifyService);
 
   readonly statuses: TrackingStatus[] = ['New', 'InTreatment', 'FollowUpNeeded', 'Completed'];
@@ -182,7 +184,7 @@ export class PatientProfileComponent implements OnInit {
       procedures: [...this.visitDraft.procedures],
     };
 
-    this.patientsService.addVisit(p.id, visit);
+    this.visitsService.addVisit(p.id, visit);
     this.showVisitForm = false;
     this.visitDraft = this.emptyVisit();
     this.refreshPatientSignal();
@@ -194,7 +196,7 @@ export class PatientProfileComponent implements OnInit {
     if (!p) return;
     this.notify.showConfirmAlert('warning').then((result) => {
       if (result.isConfirmed) {
-        this.patientsService.removeVisit(p.id, visitId);
+        this.visitsService.removeVisit(p.id, visitId);
         this.refreshPatientSignal();
         this.notify.showSuccessAlert();
       }

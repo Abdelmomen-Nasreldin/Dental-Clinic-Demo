@@ -2,22 +2,22 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { PatientsService } from '../../services/patients.service';
+import { VisitsService } from '../../services/visits.service';
 import { PAGES } from '../../defines/constants';
 
 @Component({
-  selector: 'app-visit-details',
+  selector: 'app-visits-page',
   imports: [CommonModule, FormsModule],
-  templateUrl: './visit-details.component.html',
+  templateUrl: './visits-page.component.html',
 })
-export class VisitDetailsComponent {
+export class VisitsPageComponent {
   private readonly router = inject(Router);
-  readonly patientsService = inject(PatientsService);
+  private readonly visitsService = inject(VisitsService);
 
   searchTerm = signal('');
 
   filteredVisits = computed(() => {
-    const all = this.patientsService.allVisits();
+    const all = this.visitsService.allVisits();
     const term = this.searchTerm().toLowerCase().trim();
     if (!term) return all;
     return all.filter((v) => v.patientName.toLowerCase().includes(term));

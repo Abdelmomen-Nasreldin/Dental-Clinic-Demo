@@ -146,7 +146,7 @@ export class PatientsService {
         };
       }),
     );
-  }
+   }
 
   updateBill(patientId: string, newTotal: number) {
     this._patients.update((list) =>
@@ -154,19 +154,14 @@ export class PatientsService {
     );
   }
 
-  addVisit(patientId: string, visit: Visit) {
+  addVisitToPatient(patientId: string, visit: Visit, event: TrackingEvent) {
     this._patients.update((list) =>
       list.map((p) => {
         if (p.id !== patientId) return p;
         const totalCost = visit.procedures.reduce((sum, pr) => sum + pr.cost, 0);
-        const event: TrackingEvent = {
-          id: `E${Date.now()}`,
-          date: visit.visitDate,
-          type: 'visit',
-          description: 'Visit: ' + visit.diagnosis + (totalCost ? ' (' + totalCost + ' EGP)' : ''),
-        };
         return {
           ...p,
+          totalBill: p.totalBill + totalCost,
           visits: [...p.visits, visit],
           lastVisitDate: visit.visitDate > (p.lastVisitDate ?? '') ? visit.visitDate : p.lastVisitDate,
           history: [...p.history, event],
@@ -175,7 +170,7 @@ export class PatientsService {
     );
   }
 
-  removeVisit(patientId: string, visitId: string) {
+  removeVisitFromPatient(patientId: string, visitId: string) {
     this._patients.update((list) =>
       list.map((p) => {
         if (p.id !== patientId) return p;
@@ -186,22 +181,6 @@ export class PatientsService {
       }),
     );
   }
-
-  getVisitsForPatient(patientId: string): Visit[] {
-    return this._patients().find((p) => p.id === patientId)?.visits ?? [];
-  }
-
-  allVisits = computed(() => {
-    return this._patients()
-      .flatMap((p) =>
-        p.visits.map((v) => ({
-          ...v,
-          patientId: p.id,
-          patientName: `${p.firstName} ${p.lastName}`,
-        })),
-      )
-      .sort((a, b) => (b.visitDate > a.visitDate ? 1 : -1));
-  });
 
   generateNextId(): string {
     const ids = this._patients().map((p) => Number.parseInt(p.id.replace('P', ''), 10));
